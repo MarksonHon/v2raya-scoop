@@ -69,7 +69,11 @@
     "persist": "config",
     "checkver": {
         "url": "https://scoop-apps.vercel.app/v2rayA/v2rayA-inno",
-        "regex": "(?sm)/v2rayA/v2rayA/actions/runs/(?<runid>\\d+).*?v2raya_windows_x64_unstable-([\\w.]+)\\.exe"
+        "script": [
+            "$latest_action_id = ((Invoke-RestMethod \"https://api.github.com/repos/v2rayA/v2rayA/actions/workflows/windows_inno.yml/runs\").workflow_runs).jobs_url | Select-Object -First 1 | ForEach-Object { ([string]$_).split('/')[8]}\"",
+            "$latest_version = ((((Invoke-RestMethod \"https://api.github.com/repos/v2rayA/v2rayA/actions/runs/$latest_action_id/artifacts\").artifacts).name | Select-Object -First 1).split('-')[1]).split('.exe')[0]"
+        ],
+        "replace": "$latest_version"
     },
     "autoupdate": {
         "architecture": {
